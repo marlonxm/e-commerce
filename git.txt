@@ -1,0 +1,10 @@
+git init
+
+git remote add origin https://github.com/marlonxm/e-commerce.git
+
+git add --all
+
+git commit -m "inicio do projeto"
+
+git push origin master
+
