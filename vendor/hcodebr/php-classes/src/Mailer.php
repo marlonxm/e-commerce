@@ -17,7 +17,7 @@
 
 			$config = array(
 			    "base_url"      => null,
-			    "tpl_dir"       => $_SERVER['DOCUMENT_ROOT']."/views/email",
+			    "tpl_dir"       => $_SERVER['DOCUMENT_ROOT']."/views/email/",
 			    "cache_dir"     => $_SERVER['DOCUMENT_ROOT']."/views-cache/",
 			    "debug"         => false
 			);
@@ -33,7 +33,7 @@
 			$html = $tpl->draw($tplName, true);
 
 			//Create a new PHPMailer instance 
-			$this->$mail = new \PHPMailer;
+			$this->mail = new \PHPMailer;
 
 			//Tell PHPMailer to use SMTP
 			$this->mail->isSMTP();
@@ -72,7 +72,7 @@
 			//$this->mail->addReplyTo('replyto@example.com', 'First Last');
 
 			//Set who the message is to be sent to (	PARA QUEM VAI O EMAIL)
-			$this->mail->addAddress($toAddres, $toName);
+			$this->mail->addAddress($toAddress, $toName);
 
 			//Set the subject line (ASSUNTO)
 			$this->mail->Subject = $subject;
