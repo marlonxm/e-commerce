@@ -104,7 +104,7 @@ class User extends Model
 			"SELECT * 
 			FROM tb_persons a 
 			INNER JOIN tb_users b USING(idperson) 
-			WHERE a.desemail = :email;", array(
+			WHERE a.desemail = :email", array(
 			":email"=>$email
 		));
 		if (count($results) === 0 ){
@@ -141,19 +141,12 @@ class User extends Model
 	} // End function getForgot
 	public static function validForgotDecrypt($result)
 	{
-		
 		$result = base64_decode($result);
-
 		$code = mb_substr($result, openssl_cipher_iv_length('aes-256-cbc'), null, '8bit');
-
 		$iv = mb_substr($result, 0, openssl_cipher_iv_length('aes-256-cbc'), '8bit');
-
 		$idrecovery = openssl_decrypt($code, 'aes-256-cbc', User::SECRET, 0, $iv);
-
 		$sql = new Sql();
-
 		$results = $sql->select("
-
 			SELECT * 
 			FROM tb_userspasswordsrecoveries a
 			INNER JOIN tb_users b USING(iduser)
@@ -167,15 +160,10 @@ class User extends Model
 			", array(
 				":idrecovery"=>$idrecovery
 		));
-
 		if (count($results) === 0 ) {
-
-			throw new \Exception("Não foi possível recuperar a senha");	
-
+			throw new \Exception("Não foi possível recuperar a senha");			
 		} else {
-
 			return $results[0];
-
 		}
 	} // End function validForgotDecrypt
 	

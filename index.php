@@ -199,8 +199,8 @@ $app->get("/admin/forgot/reset", function (){
 });
 
 $app->post("/admin/forgot/reset", function (){
-
-	$forgot = User::validForgotDecrypt($_GET["code"]);
+	
+	$forgot = User::validForgotDecrypt($_POST["code"]);
 
 	User::setForgotUsed($forgot["idrecovery"]);
 
@@ -208,11 +208,7 @@ $app->post("/admin/forgot/reset", function (){
 
 	$user->get((int)$forgot["iduser"]);
 
-	$password = User::getPasswordHash($_POST["password"]);
-
-	// $password = password_hash($_POST["password"], PASSWORD_DEFAULT, ["cost"=>12]);
-
-	// $user->setPassword($_POST["password"]);
+	$password = password_hash($_POST["password"], PASSWORD_DEFAULT, ["cost"=>12]);
 
 	$user->setPassword($password);
 
