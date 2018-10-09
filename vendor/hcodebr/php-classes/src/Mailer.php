@@ -7,7 +7,7 @@
 	class Mailer {
 
 		const USERNAME = "marlonxxmm@gmail.com";
-		const PASSWORD = "********";
+		const PASSWORD = "******";
 		const NAME_FROM = "Hcode Store";
 
 		private $email;

@@ -40,7 +40,7 @@ class Product extends Model {
 
 		$sql = new Sql();
 
-		$results = $sql->select("SELECT * FROM tb_produtcs WHERE idproduct = :idproduct", [
+		$results = $sql->select("SELECT * FROM tb_products WHERE idproduct = :idproduct", [
 			':idproduct'=>$idproduct
 		]);
 
@@ -52,7 +52,7 @@ class Product extends Model {
 
 		$sql = new Sql();
 
-		$sql->query("DELETE FROM tb_produtcs WHERE idproduct = :idproduct", [
+		$sql->query("DELETE FROM tb_products WHERE idproduct = :idproduct", [
 			':idproduct'=>$this->getidproduct()
 		]);
 
@@ -64,6 +64,7 @@ class Product extends Model {
 		if (file_exists($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . 
 			"res" . DIRECTORY_SEPARATOR . 
 			"site" . DIRECTORY_SEPARATOR . 
+			"img" . DIRECTORY_SEPARATOR . 
 			"products" . DIRECTORY_SEPARATOR .
 			$this->getidproduct() . ".jpg"
 		)) {
@@ -71,7 +72,7 @@ class Product extends Model {
 		
 		}else{
 
-			$url = "/res/site/img/products.jpg";
+			$url = "/res/site/img/product.jpg";
 		}
 
 		return $this->setdesphoto($url);
@@ -89,6 +90,42 @@ class Product extends Model {
 
 	}// End function getValues
 
+	public function setPhoto($file)
+	{
+
+		$extension = explode('.', $file['name']);
+		$extension = end($extension);
+
+		switch ($extension) {
+			case "jpg":
+			case "jpeg":
+			$image = imagecreatefromjpeg($file["tmp_name"]);
+			break;
+
+			case "gif":
+			$image = imagecreatefromgif($file["tmp_name"]);
+				break;
+			
+			case "png":
+			$image = imagecreatefrompng($file["tmp_name"]);
+				break;
+			
+		} //End Switch ( para que qlqr imagem seja convertida em JPG)
+
+		$dist = $_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . 
+			"res" . DIRECTORY_SEPARATOR . 
+			"site" . DIRECTORY_SEPARATOR . 
+			"img" . DIRECTORY_SEPARATOR . 
+			"products" . DIRECTORY_SEPARATOR .
+			$this->getidproduct() . ".jpg";
+
+		imagejpeg($image, $dist);
+
+		imagedestroy($image);
+
+		$this->checkPhoto();
+
+	}// End function setPhoto
 
 			
 } // End class Product
