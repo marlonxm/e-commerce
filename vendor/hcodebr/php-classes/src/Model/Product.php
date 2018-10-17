@@ -24,7 +24,8 @@ class Product extends Model {
 			$row = $p->getValues();
 		}
 
-		return $list;	}
+		return $list;	
+	}// End function checkList
 
 	public function save() 
 	{
