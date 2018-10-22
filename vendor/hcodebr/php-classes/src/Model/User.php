@@ -6,46 +6,105 @@ use \Hcode\Mailer;
 
 
 
-class User extends Model 
-{
+class User extends Model {
+
 	const SESSION = "User";
 	const SECRET = "HcodePhp7_Secret";
-	public static function login($login, $password)
+
+	public static function getFromSession()
 	{
-		$sql = new Sql();
-		$results =  $sql->select("SELECT * FROM tb_users WHERE deslogin = :LOGIN", array(
-				":LOGIN"=>$login
-		));
-		if (count($results) === 0){
-			throw new \Exception("Usuário inexistente ou senha inválida!");
-			
+
+		$user = new User();
+
+		if(isset($_SESSION[User::SESSION] ) && (int)$_SESSION[User::SESSION]['iduser'] > 0){
+
+			$user->setData($_SESSION[User::SESSION]);
+
 		}
-		$data = $results[0];
-		if (password_verify($password, $data["despassword"])) {
-			$user = new User();
-			$user->setData($data);
-			$_SESSION[User::SESSION] = $user->getValues();
-			return $user;
-		} else {
-			throw new \Exception("Usuário inexistente ou senha inválida!");
-			
-		}
-	} // End function login
-	public static function verifyLogin($inadmin = true)
+
+		return $user;
+
+	}
+
+	public static function checkLogin($inadmin = true)
 	{
-		if (
+
+		if ( 
 			!isset($_SESSION[User::SESSION])
 			||
 			!$_SESSION[User::SESSION]
 			||
 			!(int)$_SESSION[User::SESSION]["iduser"] > 0
-			||
-			(bool)$_SESSION[User::SESSION]["inadmin"] !== $inadmin
 		) {
+			//Não está logado
+			return false;
+
+		} else {
+
+			if ($inadmin === true && (bool)$_SESSION[User::SESSION]["inadmin"] === true) {
+				
+				return true;
+
+			} else if ($inadmin === false) {
+
+				return true;
+
+			} else {
+
+				return false;
+
+			}
+
+		}
+
+	}
+	
+	public static function login($login, $password)
+	{
+		$sql = new Sql();
+
+		$results =  $sql->select("SELECT * FROM tb_users WHERE deslogin = :LOGIN", array(
+				":LOGIN"=>$login
+		));
+
+		if (count($results) === 0){
+
+			throw new \Exception("Usuário inexistente ou senha inválida!");
+			
+		}
+
+		$data = $results[0];
+
+		if (password_verify($password, $data["despassword"])) {
+
+			$user = new User();
+
+			$user->setData($data);
+
+			$_SESSION[User::SESSION] = $user->getValues();
+
+			return $user;
+
+		} else {
+
+			throw new \Exception("Usuário inexistente ou senha inválida!");
+			
+		}
+
+	} // End function login
+
+	public static function verifyLogin($inadmin = true)
+	{
+
+		if (User::checkLogin($inadmin)) {
+
 			header("Location: /admin/login");
 			exit;
+
 		}
+
 	} // End function verifyLogin
+
 	public static function logout()
 	{
 		$_SESSION[User::SESSION] = NULL;
@@ -76,6 +135,7 @@ class User extends Model
 			));
 		$this->setData($results[0]);
 	}
+
 	public function update()
 	{
 		$sql = new Sql();
@@ -90,6 +150,7 @@ class User extends Model
 			));
 		$this->setData($results[0]);
 	} // End funcion update
+
 	public function delete()
 	{
 		$sql = new Sql();
@@ -97,6 +158,7 @@ class User extends Model
 			":iduser"=>$this->getiduser()
 		));
 	} // End function delete
+
 	public static function getForgot($email, $inadmin = true)
 	{
 		$sql = new Sql();
@@ -139,6 +201,7 @@ class User extends Model
 			}
 		}
 	} // End function getForgot
+	
 	public static function validForgotDecrypt($result)
 	{
 		$result = base64_decode($result);

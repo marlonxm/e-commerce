@@ -94,10 +94,4 @@ $app->post("/admin/users/:iduser", function($iduser) {
 
 });
 
-
-
-
-
-
-
- ?>
+?>
