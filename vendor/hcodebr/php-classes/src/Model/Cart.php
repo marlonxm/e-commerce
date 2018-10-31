@@ -15,7 +15,7 @@ class Cart extends Model {
 	{
 		$cart = new Cart();
 
-		if(isset($_SESSION[Cart::SESSION]) && (int)$_SESSION[Cart::SESSION][0]['idcart'] > 0){
+		if(isset($_SESSION[Cart::SESSION]) && (int)$_SESSION[Cart::SESSION]['idcart'] > 0){
 
 			$cart->get((int)$_SESSION[Cart::SESSION]['idcart']);
 
@@ -77,7 +77,7 @@ class Cart extends Model {
 
 		$sql = new Sql();
 
-		$results = $sql->select("SELECT * FROM tc_carts WHERE idcart = :idcart", [
+		$results = $sql->select("SELECT * FROM tb_carts WHERE idcart = :idcart", [
 			':idcart'=>$idcart
 		]);
 
