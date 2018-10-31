@@ -63,11 +63,12 @@ class User extends Model {
 	{
 		$sql = new Sql();
 
-		$results =  $sql->select("SELECT * FROM tb_users WHERE deslogin = :LOGIN", array(
-				":LOGIN"=>$login
-		));
+		$results = $sql->select("SELECT * FROM tb_users a INNER JOIN tb_persons b ON a.idperson = b.idperson WHERE a.deslogin = :LOGIN", array(
+			":LOGIN"=>$login
+		)); 
 
-		if (count($results) === 0){
+		if (count($results) === 0)
+		{
 
 			throw new \Exception("Usuário inexistente ou senha inválida!");
 			
@@ -75,9 +76,12 @@ class User extends Model {
 
 		$data = $results[0];
 
-		if (password_verify($password, $data["despassword"])) {
+		if (password_verify($password, $data["despassword"]) === true) 
+		{
 
 			$user = new User();
+
+			$data['desperson'] = utf8_encode($data['desperson']);
 
 			$user->setData($data);
 
@@ -96,9 +100,17 @@ class User extends Model {
 	public static function verifyLogin($inadmin = true)
 	{
 
-		if (User::checkLogin($inadmin)) {
+		if (!User::checkLogin($inadmin)) {
 
-			header("Location: /admin/login");
+			if ($inadmin) {
+
+				header("Location: /admin/login");
+
+			} else {
+
+				header("Location: /login");
+
+			}
 			exit;
 
 		}
@@ -107,15 +119,24 @@ class User extends Model {
 
 	public static function logout()
 	{
+
 		$_SESSION[User::SESSION] = NULL;
+
 	} // End function logout
+
 	public static function listAll()
+
 	{
+
 		$sql = new Sql();
+
 		return $sql->select("SELECT * FROM tb_users a INNER JOIN tb_persons b USING(idperson) ORDER BY b.desperson");
+
 	} // End function listAll
+
 	public function save()
 	{
+
 		$sql = new Sql();
 		$results = $sql->select("CALL sp_users_save(:desperson, :deslogin, :despassword, :desemail, :nrphone, :inadmin)", array(
 			":desperson"=>$this->getdesperson(),
@@ -125,8 +146,11 @@ class User extends Model {
 			":nrphone"=>$this->getnrphone(),
 			":inadmin"=>$this->getinadmin()
 			));
+
 		$this->setData($results[0]);
+
 	} // End function save
+	
 	public function get($iduser)
 	{
 		$sql = new Sql();
