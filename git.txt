@@ -1,10 +1,22 @@
-git init
 
-git remote add origin https://github.com/marlonxm/e-commerce.git
+Para começa um git
 
-git add --all
+	git init
 
-git commit -m "inicio do projeto"
+	git remote add origin https://github.com/marlonxm/e-commerce.git
 
-git push origin master
+	git add --all
 
+	git commit -m "inicio do projeto"
+
+	git push origin master
+
+
+
+Para adicionar atualizações
+
+	git add --all
+
+	git commit -m "inicio do projeto"
+
+	git push origin master
