@@ -141,9 +141,9 @@ class User extends Model {
 
 		$sql = new Sql();
 		$results = $sql->select("CALL sp_users_save(:desperson, :deslogin, :despassword, :desemail, :nrphone, :inadmin)", array(
-			":desperson"=>$this->getdesperson(),
+			":desperson"=>utf8_decode($this->getdesperson()),
 			":deslogin"=>$this->getdeslogin(),
-			":despassword"=>$this->getdespassword(),
+			":despassword"=>User::getdespasswordHash($this->getdespassword()),
 			":desemail"=>$this->getdesemail(),
 			":nrphone"=>$this->getnrphone(),
 			":inadmin"=>$this->getinadmin()
@@ -172,7 +172,7 @@ class User extends Model {
 			":iduser"=>utf8_decode($this->getiduser()),
 			":desperson"=>$this->getdesperson(),
 			":deslogin"=>$this->getdeslogin(),
-			":despassword"=>$this->getdespassword(),
+			":despassword"=>User::getdespasswordHash($this->getdespassword()),
 			":desemail"=>$this->getdesemail(),
 			":nrphone"=>$this->getnrphone(),
 			":inadmin"=>$this->getinadmin()
@@ -310,9 +310,49 @@ class User extends Model {
 	public static function setErrorRegister($msg)
 	{
 
-		$_SESSION[User::ERROR] = $msg;
+		$_SESSION[User::ERROR_REGISTER] = $msg;
 
-	}
+	}//End class setErrorRegister
+
+	public static function getErrorRegister()
+	{
+
+		$msg = (isset($_SESSION[User::ERROR_REGISTER])) && ($_SESSION[User::ERROR_REGISTER]) ? $_SESSION[User::ERROR_REGISTER] : "";
+
+		User::clearErrorRegister();
+
+		return $msg;
+
+	}//End class setErrorRegister
+
+	public static function clearErrorRegister()
+	{
+
+		$_SESSION[User::ERROR_REGISTER] = NULL;
+		
+	}//End class clearErrorRegister
+
+	public static function checkLoginExist($login)
+	{
+
+		$sql = new Sql();
+
+		$results = $sql->select("SELECT * FROM tb_users WHERE deslogin = :deslogin", [
+			':deslogin'=>$login
+		]);
+
+		return (count($results) > 0);
+		
+	}//End class clearErrorRegister
+
+	public static function getdespasswordHash($password)
+	{
+
+		return password_hash($password, PASSWORD_DEFAULT, [
+			'cort'=>12
+		]);
+
+	}//End class getdespasswordHash
 	
 } // End class setErrorRegister
 ?>
