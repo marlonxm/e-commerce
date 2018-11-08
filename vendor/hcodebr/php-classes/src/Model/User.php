@@ -10,6 +10,8 @@ class User extends Model {
 
 	const SESSION = "User";
 	const SECRET = "HcodePhp7_Secret";
+	const ERROR = "UserError";
+	const ERROR_REGISTER = "UserErrorRegister";
 
 	public static function getFromSession()
 	{
@@ -157,6 +159,9 @@ class User extends Model {
 		$results = $sql->select("SELECT * FROM tb_users a INNER JOIN tb_persons b USING(idperson) WHERE a.iduser = :iduser", array(
 			":iduser"=>$iduser
 			));
+
+		$data['desperson'] = utf8_encode($data['desperson']);
+
 		$this->setData($results[0]);
 	}
 
@@ -164,7 +169,7 @@ class User extends Model {
 	{
 		$sql = new Sql();
 		$results = $sql->select("CALL sp_usersupdate_save(:iduser, :desperson, :deslogin, :despassword, :desemail, :nrphone, :inadmin)", array(
-			":iduser"=>$this->getiduser(),
+			":iduser"=>utf8_decode($this->getiduser()),
 			":desperson"=>$this->getdesperson(),
 			":deslogin"=>$this->getdeslogin(),
 			":despassword"=>$this->getdespassword(),
@@ -275,6 +280,39 @@ class User extends Model {
 		));
 
 	}// End function setPassword
+
+	public static function setError($msg) 
+	{
+
+		$_SESSION[User::ERROR] = $msg;
+
+
+	}//End class setError
+
+	public static function getError()
+	{
+
+		$msg = (isset($_SESSION[User::ERROR])) && ($_SESSION[User::ERROR]) ? $_SESSION[User::ERROR] : "";
+
+		User::clearError();
+
+		return $msg;
+
+	}//End class getError
+
+	public static function clearError()
+	{
+
+		$_SESSION[User::ERROR] = NULL;
+
+	}//End class clearError
+
+	public static function setErrorRegister($msg)
+	{
+
+		$_SESSION[User::ERROR] = $msg;
+
+	}
 	
-} // End class User
+} // End class setErrorRegister
 ?>
